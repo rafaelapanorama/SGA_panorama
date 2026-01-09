@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="POST">
+    <div class="row">
+        <!-- Canal -->
+        <div class="col-md-6 mb-3">
+            <label for="canal" class="form-label">Canal</label>
+            <select class="form-select" id="canal" name="canal" required>
+                {% for canal in canais %}
+                    <option value="{{ canal.nome }}" {% if form_data.canal == canal.nome %}selected{% endif %}>{{ canal.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Categoria -->
+        <div class="col-md-6 mb-3">
+            <label for="categoria" class="form-label">Categoria</label>
+            <select class="form-select" id="categoria" name="categoria" required>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.nome }}" {% if form_data.categoria == categoria.nome %}selected{% endif %}>{{ categoria.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- nome_contato_responsavel (Pai) -->
+        <div class="col-md-6 mb-3">
+            <label for="nome_responsavel_1" class="form-label">Nome do Responsável 1</label>
+            <input type="text" class="form-control" id="nome_responsavel_1" name="nome_responsavel_1" value="{{ form_data.nome_responsavel_2 or '' }}" required>
+        </div>
+        <!-- CPF Contato/Responsável (Pai) -->
+        <div class="col-md-6 mb-3">
+            <label for="cpf_responsavel_1" class="form-label">CPF do Responsável 1</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="cpf_responsavel_1" 
+                name="cpf_responsavel_1" 
+                value="{{ form_data.cpf_responsavel_1 or '' }}" 
+                required 
+                placeholder="Digite apenas números"
+                inputmode="numeric" 
+                pattern="\d{11}" 
+                maxlength="11"
+            />
+        </div>
+
+        <!-- Nome Contato/Responsável (Mãe) -->
+        <div class="col-md-6 mb-3">
+            <label for="nome_responsavel_2" class="form-label">Nome do Responsável 2</label>
+            <input type="text" class="form-control" id="nome_responsavel_2" name="nome_responsavel_2" value="{{ form_data.nome_responsavel_1 or '' }}" required>
+        </div>
+        <!-- CPF Contato/Responsável (Mãe) -->
+        <div class="col-md-6 mb-3">
+            <label for="cpf_responsavel_2" class="form-label">CPF do Responsável 2</label>
+            <input
+            type="text"
+            class="form-control"
+            id="cpf_responsavel_2"
+            name="cpf_responsavel_2"
+            value="{{ form_data.cpf_responsavel_2 or '' }}"
+            required
+            placeholder="Digite apenas números"
+            inputmode="numeric"
+            pattern="\d{11}"
+            maxlength="11"
+            />
+
+        </div>
+
+        <!-- Setor -->
+        <div class="col-md-12 mb-3">
+            <label class="form-label">Setor</label>
+            <div>
+                {% for setor in setores %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="setor" id="setor-{{ setor.id }}" value="{{ setor.nome }}" {% if form_data.setor == setor.nome %}checked{% endif %} required>
+                    <label class="form-check-label" for="setor-{{ setor.id }}">{{ setor.nome }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Data do Agendamento -->
+        <div class="col-md-4 mb-3">
+            <label for="data_agendamento" class="form-label">Data do Agendamento</label>
+            <input type="date" class="form-control" id="data_agendamento" name="data_agendamento" value="{{ (form_data.data_agendamento.strftime('%Y-%m-%d') if form_data.data_agendamento else '') or '' }}" required>
+        </div>
+
+        <!-- Horário -->
+        <div class="col-md-4 mb-3">
+            <label for="horario" class="form-label">Horário</label>
+            <select class="form-select" id="horario" name="horario" required>
+                {% for time_opt in time_options %}
+                    <option value="{{ time_opt.strftime('%H:%M') }}" {% if form_data.horario and form_data.horario.strftime('%H:%M') == time_opt.strftime('%H:%M') %}selected{% endif %}>
+                        {{ time_opt.strftime('%H:%M') }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Coordenador -->
+        <div class="col-md-4 mb-3">
+            <label for="coordenador" class="form-label">Coordenação</label>
+            <select class="form-select" id="coordenador" name="coordenador" required>
+                <option value="">Selecione um coordenador</option>
+                {% for coord in coordenadores %}
+                    <option value="{{ coord.username }}" {% if form_data.coordenador == coord.username %}selected{% endif %}>{{ coord.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Status (apenas em edição) -->
+        {% if agendamento %}
+        <div class="col-md-6 mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status" required>
+                {% for status_obj in statuses %}
+                    <option value="{{ status_obj.nome }}" {% if (agendamento and agendamento.status == status_obj.nome) or (form_data and form_data.status == status_obj.nome) %}selected{% endif %}>
+                        {{ status_obj.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% else %}
+         <input type="hidden" name="status" value="Aberto-Coordenação"> {# Default status for new appointments #}
+        {% endif %}
+
+
+        <!-- Aluno -->
+        <div class="col-md-6 mb-3">
+            <label for="aluno" class="form-label">Aluno</label>
+            <input type="text" class="form-control" id="aluno" name="aluno" value="{{ form_data.aluno or '' }}" required>
+        </div>
+
+        <!-- Escola anterior do ALuno -->
+        <div class="col-md-6 mb-3">
+            <label for="escolaAluno" class="form-label">Escola do Aluno:</label>
+            <input type="text" class="form-control" id="escolaAluno" name="escolaAluno" value="{{ form_data.escolaAluno or '' }}" required>
+        </div>
+
+        <!-- Motivo -->
+        <div class="col-12 mb-3">
+            <label for="motivo" class="form-label">Motivo</label>
+            <textarea class="form-control" id="motivo" name="motivo" rows="3" required>{{ form_data.motivo or '' }}</textarea>
+        </div>
+
+        <!-- Observação -->
+        <div class="col-12 mb-3">
+            <label for="observacao" class="form-label">Observação</label>
+            <textarea class="form-control" id="observacao" name="observacao" rows="3">{{ form_data.observacao or '' }}</textarea>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
+
+

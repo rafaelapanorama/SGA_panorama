@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Agendamentos</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 10px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: #0d6efd;
+            font-size: 18pt;
+        }
+        
+        .header .subtitle {
+            margin-top: 5px;
+            color: #666;
+            font-size: 9pt;
+        }
+        
+        .filters {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-size: 9pt;
+        }
+        
+        .filters strong {
+            color: #0d6efd;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 8pt;
+        }
+        
+        table thead {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        table th {
+            padding: 8px 4px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #0d6efd;
+        }
+        
+        table td {
+            padding: 6px 4px;
+            border: 1px solid #ddd;
+        }
+        
+        table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 7pt;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .status-apto-coordenacao {
+            background-color: #198754;
+            color: white;
+        }
+        
+        .status-nao-apto-coordenacao {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .status-apto-financeiro {
+            background-color: #0dcaf0;
+            color: black;
+        }
+        
+        .status-nao-apto-financeiro {
+            background-color: #fd7e14;
+            color: white;
+        }
+        
+        .status-concluido-secretaria {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .status-default {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Agendamentos</h1>
+        <div class="subtitle">Gerado em: {{ current_date }}</div>
+    </div>
+
+    {% if filters_applied %}
+    <div class="filters">
+        <strong>Filtros Aplicados:</strong> {{ filters_applied | join(' | ') }}
+    </div>
+    {% endif %}
+
+    {% if bookings %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 3%;">ID</th>
+                <th style="width: 7%;">Data</th>
+                <th style="width: 5%;">Horário</th>
+                <th style="width: 12%;">Responsável 1</th>
+                <th style="width: 9%;">CPF 1</th>
+                <th style="width: 12%;">Responsável 2</th>
+                <th style="width: 9%;">CPF 2</th>
+                <th style="width: 10%;">Aluno</th>
+                <th style="width: 8%;">Status</th>
+                <th style="width: 8%;">Setor</th>
+                <th style="width: 10%;">Coordenador</th>
+                <th style="width: 7%;">Categoria</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.data_agendamento.strftime('%d/%m/%Y') if booking.data_agendamento else 'N/A' }}</td>
+                <td>{{ booking.horario.strftime('%H:%M') if booking.horario else 'N/A' }}</td>
+                <td>{{ booking.nome_responsavel_1 or 'N/A' }}</td>
+                <td>{{ booking.cpf_responsavel_1 or 'N/A' }}</td>
+                <td>{{ booking.nome_responsavel_2 or 'N/A' }}</td>
+                <td>{{ booking.cpf_responsavel_2 or 'N/A' }}</td>
+                <td>{{ booking.aluno or 'N/A' }}</td>
+                <td>
+                    <span class="status-badge 
+                        {% if 'Apto-Coordenação' in booking.status %}status-apto-coordenacao
+                        {% elif 'Não-Apto-Coordenação' in booking.status %}status-nao-apto-coordenacao
+                        {% elif 'Apto-Financeiro' in booking.status %}status-apto-financeiro
+                        {% elif 'Não-Apto-Financeiro' in booking.status %}status-nao-apto-financeiro
+                        {% elif 'Concluído-Secretaria' in booking.status %}status-concluido-secretaria
+                        {% else %}status-default
+                        {% endif %}">
+                        {{ booking.status or 'N/A' }}
+                    </span>
+                </td>
+                <td>{{ booking.setor or 'N/A' }}</td>
+                <td>{{ booking.coordenador or 'N/A' }}</td>
+                <td>{{ booking.categoria or 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <strong>Total de registros:</strong> {{ bookings|length }}
+    </div>
+    {% else %}
+    <div class="no-data">
+        Nenhum agendamento encontrado com os filtros aplicados.
+    </div>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,379 @@
+/* /home/ti/Documentos/Programas/HTML/PJ27/static/style.css */
+
+/* Paleta de Cores (Exemplo) */
+:root {
+    --primary-color: #007bff; /* Azul vibrante */
+    --secondary-color: #6c757d; /* Cinza */
+    --accent-color: #28a745; /* Verde para sucesso */
+    --background-light: #f8f9fa; /* Fundo claro */
+    --text-dark: #343a40; /* Texto escuro */
+    --text-light: #ffffff; /* Texto claro */
+    --card-bg: #ffffff; /* Fundo de cartões */
+    --sidebar-bg-color: #e0f2f7; /* Um tom de azul claro */
+    --chart-color-1: #007bff; /* Azul primário */
+    --chart-color-2: #28a745; /* Verde sucesso */
+    --chart-color-3: #ffc107; /* Amarelo alerta */
+    --chart-color-4: #dc3545; /* Vermelho perigo */
+    --chart-color-5: #6c757d; /* Cinza secundário */
+    --chart-color-6: #17a2b8; /* Ciano info */
+    --chart-color-7: #6610f2; /* Índigo */
+    --chart-color-8: #fd7e14; /* Laranja */
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--text-light) !important;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.navbar-text {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Main Content Container */
+.container.mt-4 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Alertas Flash */
+.alert {
+    border-radius: .5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+/* Formulários */
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.form-control,
+.form-select {
+    border-radius: .4rem;
+    border-color: #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 .25rem rgba(0, 123, 255, .25);
+}
+
+/* Botões */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-outline-light {
+    border-color: var(--text-light);
+    color: var(--text-light);
+}
+
+.btn-outline-light:hover {
+    background-color: var(--text-light);
+    color: var(--primary-color);
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: var(--text-dark);
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2121;
+}
+
+.btn-success {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Tabelas */
+.table {
+    background-color: var(--card-bg);
+    border-radius: .5rem;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.table thead th {
+    border-bottom: none;
+    padding: 1rem;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+/* Badges */
+.badge {
+    padding: .5em .75em;
+    border-radius: .35rem;
+    font-weight: 600;
+}
+
+
+
+/* Status Vermelhos (Não Aptos) */
+.badge.status-nao-apto-coordenacao,
+.badge.status-nao-apto-financeiro {
+    background-color: var(--chart-color-4) !important; /* Vermelho */
+    color: var(--text-light) !important;
+}
+
+/* Status Verdes (Aptos) */
+.badge.status-apto-coordenacao{
+    background-color: var(--chart-color-2) !important; /* Verde */
+    color: var(--text-light) !important;
+}
+
+.badge.status-apto-financeiro {
+    background-color: #ffc107 !important; /* mesmo amarelo do bg-warning */
+    color: #212529 !important;            /* text-dark do Bootstrap */
+    border: none !important;
+}
+
+/* Status Azul (Concluído Secretaria) */
+.badge.status-concluido-secretaria {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.badge.status-apto-financeiro {
+    background-color: #ffc107 !important; /* mesmo amarelo do bg-warning */
+    color: #212529 !important;            /* text-dark do Bootstrap */
+    border: none !important;
+}
+
+/* Status Azul (Concluído Secretaria) */
+.badge.status-concluido-secretaria {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Status Cinza (demais status) */
+.badge.bg-secondary {
+    background-color: var(--secondary-color) !important; /* Cinza */
+    color: var(--text-light) !important;
+}
+
+/* Cards (para futuros usos ou elementos similares) */
+.card {
+    border: none;
+    border-radius: .75rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border-bottom: none;
+    border-top-left-radius: .75rem;
+    border-top-right-radius: .75rem;
+    font-weight: 600;
+}
+
+.card-body {
+    /* background-color: var(--card-bg); */ /* Removido para permitir cores de fundo do Bootstrap */
+    /* border-bottom-left-radius: .75rem;
+    border-bottom-right-radius: .75rem; */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    .navbar-nav .nav-link,
+    .navbar-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Sidebar Styles */
+#wrapper {
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin .25s ease-out;
+    width: 15rem; /* Largura padrão da sidebar */
+    background-color: var(--sidebar-bg-color); /* Aplicando o azul claro */
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    color: var(--text-dark); /* Texto escuro para contraste no cabeçalho */
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}
+
+/* Sidebar Menu Items */
+.list-group-item-action {
+    color: var(--text-dark); /* Texto escuro */
+}
+
+.list-group-item-action:hover {
+    color: var(--primary-color); /* Cor primária no hover */
+    background-color: rgba(0, 123, 255, .1); /* Leve azul no hover */
+}
+
+.list-group-item-action.active {
+    color: var(--text-light); /* Texto branco para ativo */
+    background-color: var(--primary-color); /* Cor primária para item ativo */
+    border-color: var(--primary-color);
+}
+
+/* Dropdown na Sidebar (submenus) */
+#sidebar-wrapper .collapse .list-group-item-action {
+    padding-left: 2.5rem; /* Aumenta o padding para indentar */
+    background-color: var(--sidebar-bg-color); /* Fundo azul claro */
+    color: var(--text-dark); /* Texto escuro */
+}
+
+#sidebar-wrapper .collapse .list-group-item-action:hover {
+    background-color: rgba(0, 123, 255, .15); /* Levemente mais escuro no hover */
+    color: var(--primary-color);
+}
+
+/* Estilo para o ícone de toggle do dropdown */
+.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+}
+
+.dropdown-toggle[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+/* Top Navbar in Page Content */
+#page-content-wrapper .navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+}
+
+#page-content-wrapper .navbar-text {
+    color: var(--text-dark) !important;
+}

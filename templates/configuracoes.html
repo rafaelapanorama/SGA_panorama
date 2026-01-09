@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Configurações{% endblock %}
+
+{% block content %}
+<h2>Configurações</h2>
+<p>Pré-configure as opções para os formulários de agendamento.</p>
+
+<div class="row">
+    <!-- Canais -->
+    <div class="col-md-4">
+        <h4>Canais</h4>
+        <form method="POST" action="{{ url_for('configuracoes') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="canal_nome" placeholder="Novo Canal" required>
+                <button class="btn btn-primary" type="submit" name="add_canal">Adicionar</button>
+            </div>
+        </form>
+        <ul class="list-group">
+            {% for canal in canais %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ canal.nome }}
+                <form action="{{ url_for('excluir_config', model_name='canal', id=canal.id) }}" method="POST" onsubmit="return confirm('Tem certeza?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="list-group-item">Nenhum canal cadastrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Setores -->
+    <div class="col-md-4">
+        <h4>Setores</h4>
+        <form method="POST" action="{{ url_for('configuracoes') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="setor_nome" placeholder="Novo Setor" required>
+                <button class="btn btn-primary" type="submit" name="add_setor">Adicionar</button>
+            </div>
+        </form>
+        <ul class="list-group">
+            {% for setor in setores %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ setor.nome }}
+                <form action="{{ url_for('excluir_config', model_name='setor', id=setor.id) }}" method="POST" onsubmit="return confirm('Tem certeza?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="list-group-item">Nenhum setor cadastrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Categorias -->
+    <div class="col-md-4">
+        <h4>Categorias</h4>
+        <form method="POST" action="{{ url_for('configuracoes') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="categoria_nome" placeholder="Nova Categoria" required>
+                <button class="btn btn-primary" type="submit" name="add_categoria">Adicionar</button>
+            </div>
+        </form>
+        <ul class="list-group">
+            {% for categoria in categorias %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ categoria.nome }}
+                <form action="{{ url_for('excluir_config', model_name='categoria', id=categoria.id) }}" method="POST" onsubmit="return confirm('Tem certeza?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="list-group-item">Nenhuma categoria cadastrada.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Statuses -->
+    <div class="col-md-4">
+        <h4>Status de Agendamento</h4>
+        <form method="POST" action="{{ url_for('configuracoes') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="status_nome" placeholder="Novo Status" required>
+                <button class="btn btn-primary" type="submit" name="add_status">Adicionar</button>
+            </div>
+        </form>
+        <ul class="list-group">
+            {% for status in statuses %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ status.nome }}
+                <form action="{{ url_for('excluir_config', model_name='status', id=status.id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este status e todos os agendamentos associados a ele?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="list-group-item">Nenhum status cadastrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

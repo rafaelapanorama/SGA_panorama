@@ -1,0 +1,99 @@
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmacaoAptoCoordenacao" tabindex="-1" aria-labelledby="confirmacaoAptoCoordenacaoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="alert-heading" id="confirmacaoAptoCoordenacaoLabel">Confirmar status: <strong>"Apto-Coordenação"</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <p>
+                  Você está prestes a definir o status como <strong>"Apto-Coordenação"</strong>.
+              </p>
+                  <p class="alert alert-warning mb-0">
+                      <small>
+                          Essa ação só pode ser feita <strong>uma única vez</strong> por agendamento. Verifique antes de confirmar.
+                      </small>
+                  </p>
+          </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmarStatusBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let statusSelecionado = '';
+    let agendamentoIdSelecionado = '';
+    let selectAtualizado = null;
+    let statusAnterior = '';
+    let submitAoFechar = false; // nova flag
+
+    let confirmacaoModal;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        confirmacaoModal = new bootstrap.Modal(document.getElementById('confirmacaoAptoCoordenacao'));
+    });
+
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('status-select')) {
+            const statusEscolhido = e.target.value;
+            const agendamentoId = e.target.getAttribute('data-agendamento-id');
+
+            if (statusEscolhido === 'Apto-Coordenação') {
+                statusAnterior = e.target.options[e.target.selectedIndex - 1]?.value || e.target.value;
+
+                statusSelecionado = statusEscolhido;
+                agendamentoIdSelecionado = agendamentoId;
+                selectAtualizado = e.target;
+
+                e.target.value = statusAnterior;
+                confirmacaoModal.show();
+            }
+        }
+    });
+
+    document.getElementById('confirmarStatusBtn').addEventListener('click', function () {
+        if (selectAtualizado) {
+            selectAtualizado.value = statusSelecionado;
+            
+            
+            const setorInput = document.getElementById(`setor-${agendamentoIdSelecionado}`);
+            if (setorInput) {
+              setorInput.value = 'Financeiro';
+            }
+            
+            // Ativa a flag para submissão após fechamento do modal
+            submitAoFechar = true;
+
+            // Fecha o modal (aguarde evento para submeter)
+            confirmacaoModal.hide();
+        }
+    });
+
+    document.getElementById('confirmacaoAptoCoordenacao').addEventListener('hidden.bs.modal', function () {
+        if (!submitAoFechar && selectAtualizado) {
+            // Usuário cancelou ou fechou o modal → restaurar valor anterior
+            selectAtualizado.value = statusAnterior;
+        }
+
+        // Se for pra submeter, faz isso agora que o modal está fechado
+        if (submitAoFechar && selectAtualizado) {
+            const formToSubmit = selectAtualizado.closest('form');
+            if (formToSubmit) {
+              
+                formToSubmit.submit();
+            }
+        }
+
+        // Resetar variáveis
+        statusSelecionado = '';
+        agendamentoIdSelecionado = '';
+        selectAtualizado = null;
+        statusAnterior = '';
+        submitAoFechar = false;
+    });
+</script>

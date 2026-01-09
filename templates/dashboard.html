@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+{% include 'modais/confirmacaoAptoCoordenacao.html' %}
+
+<h2>Dashboard de Agendamentos</h2>
+
+{% if current_user.is_admin %}
+<!-- Admin Dashboard Cards -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Agendamentos Abertos</h5>
+                <p class="card-text fs-3">{{ admin_total_agendamentos_abertos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card text-white bg-success h-100">
+            <div class="card-body">
+                <h5 class="card-title">Agendamentos Concluídos</h5>
+                <p class="card-text fs-3">{{ admin_total_agendamentos_concluidos }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Tables Section -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">Contagem por Status</div>
+            <div class="card-body">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for status, count in admin_status_counts_table %}
+                        <tr>
+                            <td>{{ status }}</td>
+                            <td><span class="badge bg-primary rounded-pill">{{ count }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center">Nenhum status encontrado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">Contagem por Coordenador</div>
+            <div class="card-body">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Coordenador</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for coordenador, count in admin_coordenador_counts_table %}
+                        <tr>
+                            <td>{{ coordenador }}</td>
+                            <td><span class="badge bg-primary rounded-pill">{{ count }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center">Nenhum coordenador encontrado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">Contagem por Setor</div>
+            <div class="card-body">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Setor</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for setor, count in admin_setor_counts_table %}
+                        <tr>
+                            <td>{{ setor }}</td>
+                            <td><span class="badge bg-primary rounded-pill">{{ count }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center">Nenhum setor encontrado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- User Dashboard Cards -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Meus Agendamentos Abertos</h5>
+                <p class="card-text fs-3">{{ total_agendamentos_abertos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card text-white bg-success h-100">
+            <div class="card-body">
+                <h5 class="card-title">Meus Agendamentos Concluídos</h5>
+                <p class="card-text fs-3">{{ total_agendamentos_concluidos }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Filter Form -->
+
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label for="data" class="form-label">Data</label>
+        <input type="date" class="form-control" id="data" name="data" value="{{ request.args.get('data', '') }}">
+    </div>
+    <div class="col-md-3">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" name="status" class="form-select">
+            <option value="">Todos</option>
+            {% for status_obj in statuses %}
+                <option value="{{ status_obj.nome }}" {% if request.args.get('status') == status_obj.nome %}selected{% endif %}>
+                    {{ status_obj.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="setor" class="form-label">Setor</label>
+        <select name="setor" id="setor" class="form-control">
+            <option value="">Todos</option>
+            {% for setor in setores %}
+                <option value="{{ setor.nome }}" {% if request.args.get('setor') == setor.nome %}selected{% endif %}>
+                    {{ setor.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-4 align-self-end">
+        <button type="submit" formaction="{{ url_for('dashboard') }}" class="btn btn-primary">Filtrar</button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Limpar</a>
+        <button type="submit" formaction="{{ url_for('export_excel') }}" class="btn btn-secondary">Exportar Excel</button>
+    </div>
+</form>
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data Agendamento</th>
+                <th>Horário</th>
+                <th>Canal</th>
+                <th>Contato</th>
+                <th>Nome do Responsável 1</th>
+                <th>CPF do Responsável 1</th>
+                <th>Nome do Responsável 2</th>
+                <th>CPF do Responsável 2</th>
+                <th>Status</th>
+                <th>Setor</th>
+                <th>Aluno</th>
+                <th>Escola do Aluno</th>
+                <th>Coordenador</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agendamento in agendamentos %}
+            <tr>
+                <td>{{ agendamento.id }}</td>
+                <td>{{ agendamento.data_agendamento.strftime('%d/%m/%Y') }}</td>
+                <td>{{ agendamento.horario.strftime('%H:%M') }}</td>
+                <td>{{ agendamento.canal }}</td>
+                <td>{{ agendamento.contato }}</td>
+                <td>{{ agendamento.nome_responsavel_1 }}</td>
+                <td>{{ agendamento.cpf_responsavel_1 }}</td>
+                <td>{{ agendamento.nome_responsavel_2 }}</td>
+                <td>{{ agendamento.cpf_responsavel_2 }}</td>
+                <td><span class="{{ agendamento.status|status_class }}">{{ agendamento.status }}</span></td>
+                <td>{{ agendamento.setor }}</td>
+                <td>{{ agendamento.aluno }}</td>
+                <td>{{ agendamento.escolaAluno }}</td>
+                <td>{{ agendamento.coordenador }}</td>
+                <td>
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('editar_agendamento', id=agendamento.id) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <form action="{{ url_for('excluir_agendamento', id=agendamento.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                        </form>
+                    {% else %}
+                        {% set is_locked = (current_user.perfil != 'financeiro' and not current_user.is_admin and agendamento.setor == 'Financeiro') %}
+                        
+                        <form action="{{ url_for('checkout_agendamento', id=agendamento.id) }}" 
+                              method="POST" 
+                              class="d-inline agendamento-form" 
+                              data-agendamento-id="{{ agendamento.id }}"
+                              data-is-locked="{{ 'true' if is_locked else 'false' }}">
+                            
+                            <div class="mb-2">
+                                <label for="status-{{ agendamento.id }}" class="form-label visually-hidden">Status</label>
+                                <select name="status" 
+                                        id="status-{{ agendamento.id }}" 
+                                        class="form-select status-select"
+                                        data-agendamento-id="{{ agendamento.id }}"
+                                        {% if is_locked %}disabled{% endif %}>
+                                    
+                                    {% for status_obj in statuses %}
+                                        {% if current_user.perfil == 'financeiro' and status_obj.nome in ['Apto-Financeiro', 'Não-Apto-Financeiro'] %}
+                                            <option value="{{ status_obj.nome }}" {% if agendamento.status == status_obj.nome %}selected{% endif %}>
+                                                {{ status_obj.nome }}
+                                            </option>
+                                        {% elif current_user.perfil != 'financeiro' and status_obj.nome in [
+                                            'Aberto-Coordenação',
+                                            'Em andamento-Coordenação',
+                                            'Remarcado-Coordenação',
+                                            'Apto-Coordenação',
+                                            'Não-Apto-Coordenação'
+                                        ] %}
+                                            <option value="{{ status_obj.nome }}" {% if agendamento.status == status_obj.nome %}selected{% endif %}>
+                                                {{ status_obj.nome }}
+                                            </option>
+                                        {% elif current_user.perfil == 'admin' or current_user.is_admin %}
+                                            <option value="{{ status_obj.nome }}" {% if agendamento.status == status_obj.nome %}selected{% endif %}>
+                                                {{ status_obj.nome }}
+                                            </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label for="observacao-{{ agendamento.id }}" class="form-label visually-hidden">Observação</label>
+                                <textarea name="observacao" 
+                                          id="observacao-{{ agendamento.id }}" 
+                                          class="form-control form-control-sm mb-2" 
+                                          rows="2" 
+                                          placeholder="Adicionar observação"
+                                          {% if is_locked %}disabled readonly{% endif %}>{{ agendamento.observacao or '' }}</textarea>
+                            </div>
+                            
+                            <input type="hidden" name="setor" id="setor-{{ agendamento.id }}" value="{{ agendamento.setor }}">
+                            
+                            {% if is_locked %}
+                                <button type="button" class="btn btn-sm btn-secondary" disabled>
+                                    <i class="bi bi-lock-fill"></i> Bloqueado
+                                </button>
+                                <small class="text-muted d-block mt-1">Enviado para Financeiro</small>
+                            {% else %}
+                                <button type="submit" class="btn btn-sm btn-success btn-update">Atualizar</button>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="15" class="text-center">Nenhum agendamento encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Função para bloquear formulário
+    function lockForm(form) {
+        const select = form.querySelector('.status-select');
+        const textarea = form.querySelector('textarea');
+        const button = form.querySelector('.btn-update');
+        
+        if (select) select.disabled = true;
+        if (textarea) {
+            textarea.disabled = true;
+            textarea.readOnly = true;
+        }
+        if (button) {
+            button.disabled = true;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-secondary');
+            button.innerHTML = '<i class="bi bi-lock-fill"></i> Bloqueado';
+        }
+        
+        console.log(`🔒 Formulário bloqueado para agendamento`);
+    }
+
+    // Processar formulários já bloqueados ao carregar
+    document.querySelectorAll('.agendamento-form[data-is-locked="true"]').forEach(form => {
+        lockForm(form);
+    });
+
+    // Interceptar mudanças de status
+    document.querySelectorAll('.status-select').forEach(select => {
+        const agendamentoId = select.dataset.agendamentoId;
+        
+        select.addEventListener('change', function(e) {
+            const newStatus = this.value;
+            const form = this.closest('form');
+            const currentUserPerfil = '{{ current_user.perfil }}';
+            
+            console.log(`Status mudado para: ${newStatus} (Perfil: ${currentUserPerfil})`);
+            
+            // Se usuário da coordenação está mudando para "Apto-Coordenação"
+            if (currentUserPerfil !== 'financeiro' && 
+                currentUserPerfil !== 'admin' && 
+                newStatus === 'Apto-Coordenação') {
+                
+                if (confirm('⚠️ ATENÇÃO: Ao marcar como "Apto-Coordenação", este agendamento será enviado para o Financeiro e você NÃO poderá mais editá-lo.\n\nDeseja continuar?')) {
+                    console.log(`✅ Usuário confirmou mudança para Apto-Coordenação`);
+                } else {
+                    // Reverter para o valor anterior
+                    this.value = this.defaultValue;
+                    console.log(`❌ Usuário cancelou mudança para Apto-Coordenação`);
+                }
+            }
+        });
+    });
+
+    // Interceptar submit dos formulários
+    document.querySelectorAll('.agendamento-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const isLocked = this.dataset.isLocked === 'true';
+            
+            if (isLocked) {
+                e.preventDefault();
+                alert('❌ Este agendamento está bloqueado pois já foi enviado para o Financeiro.');
+                console.log('🚫 Tentativa de submit bloqueada');
+                return false;
+            }
+            
+            const select = this.querySelector('.status-select');
+            const currentUserPerfil = '{{ current_user.perfil }}';
+            
+            if (select && select.value === 'Apto-Coordenação' && 
+                currentUserPerfil !== 'financeiro' && 
+                currentUserPerfil !== 'admin') {
+                
+                if (!confirm('⚠️ CONFIRMAÇÃO FINAL: Este agendamento será enviado para o Financeiro e você não poderá mais editá-lo.\n\nConfirma a atualização?')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+    });
+
+    console.log('%c[DEBUG] Sistema de proteção configurado com sucesso', 'color: blue; font-weight: bold;');
+});
+
+</script>
+    
+
+
+{% endblock %}
+   
